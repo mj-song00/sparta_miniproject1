@@ -3,18 +3,25 @@ app = Flask(__name__)
 
 from pymongo import MongoClient
 
-client = MongoClient('mongodb+srv://test:sparta@cluster0.zaev4.mongodb.net/Cluster0?retryWrites=true&w=majority',tlsCAfile=ca)
-db = client.dbsparta
+import jwt
 
+client = MongoClient('mongodb+srv://test:sparta@Cluster0.faljs.mongodb.net/Cluster0?retryWrites=true&w=majority',tlsCAfile=ca)
+db = client.blogsparta
+
+SECRET_KEY = 'HANGHAE'
 @app.route('/road')
 def home1():
     return render_template('index.html')
 
 @app.route('/blog/saveBlog', methods=['GET'])
 def save_blog():
-    url_receive = request.form['url_give']
-    summary_receive = request.form['summary_give']
-    like_receive = []
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(payload, SECRET_KEY, algorithm='HS256')
+        url_receive = request.form['url_give']
+        summary_receive = request.form['summary_give']
+        like_receive = []
+        comment_receive = []
 
     return jsonify({'msg' : '저장 완료 !!'})
 
