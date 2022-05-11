@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+        <!-- Font Awesome CSS -->
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+        <!-- JS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
 <style>
     .img{
         border: 1px solid #000;
@@ -31,6 +39,21 @@
         height: 40px;
     }
 </style>
+<script>
+    function save_blog() {
+    const url = $('#blog_url').val(); //블로그 url
+    const summary = $('#blog_summary').val(); // 블로그 요약내용
+    const today = new Date().toISOString();  // 작성 날짜
+    $.ajax({
+        type: "POST",
+        url: "/blogg/saveBlog",
+        data: {url_give: url, summary_give: summary, date_give: today},
+        success: function (response) { //{'msg': '저장 완료 !!'}
+            console.log(response)
+        }
+    });
+}
+</script>
 <body>
 <div>
     <button class="log_out_btn">로그아웃</button>
@@ -65,38 +88,9 @@
     </div>
 
 </div>
-<div class="blog_box">
-    <div class="img">이미지</div>
-    <div class="detail">
-        <a href="#">리엑트 기본</a>
-        <span>id : 000</span>
-        <p>댓글 ) <span>14</span></p>
 
-    </div>
-    <div class="heart">
-        <div class="heart_box"></div>
-        <button>수정</button>
-        <button>삭제</button>
-    </div>
-
-</div>
-<div class="blog_box">
-    <div class="img">이미지</div>
-    <div class="detail">
-        <a href="#">리엑트 기본</a>
-        <span>id : 000</span>
-        <p>댓글 ) <span>14</span></p>
-
-    </div>
-    <div class="heart">
-        <div class="heart_box"></div>
-        <button>수정</button>
-        <button>삭제</button>
-    </div>
-
-</div>
-url<input type="text">
-요약<input type="text">
-<button>추가하기</button>
+url<input type="text" id="blog_url">
+요약<input type="text" id="blog_summary">
+<button onclick="save_blog()">추가하기</button>
 </body>
 </html>

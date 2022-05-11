@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+<!-- Font Awesome CSS -->
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+<!-- JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
 <style>
     #content {
         width: 800px;
@@ -29,6 +37,22 @@
     }
 
 </style>
+<script>
+    function save_comment(a) {
+        const comment = $('#comment').val(); //댓글 내용
+        const today = new Date().toISOString(); // 댓글 작성 날짜
+        const id = a; // 블로그 id값
+        $.ajax({
+            type: "POST",
+            url: "/savecomment",
+            data: {comment_give: comment, date_give: today, id_give: id},
+            success: function (response) { // {'msg': '댓글 달기 성공 !!'}
+                alert(response['msg'])
+                window.location.reload();
+            }
+        });
+    }
+</script>
 <body>
 <div id="content">
     <div class="blog_content">블로그 내용</div>
@@ -62,8 +86,8 @@
     </div>
     <div class="save_comment">
 
-        작성하기<input type="text">
-        <button>추가</button>
+        작성하기<input type="text" id="comment">
+        <button onclick="save_comment('{{ id._id }}')">추가</button>
     </div>
 
 
