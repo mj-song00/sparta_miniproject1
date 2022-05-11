@@ -158,6 +158,22 @@ def save_blog():
 #
 #     # return jsonify({'blogs':bloglist})
 
+
+
+##임시
+@app.route('/searchblog/<keyword>')
+def blogsearch(keyword):
+    msg = keyword
+    try:
+        a = bool(db.blogs.find_one({'_id': ObjectId(msg)}))
+        if a:
+            return render_template('exa.html', msg=msg)
+        else:
+            return redirect(url_for("blogg", msg="해당 블로그를 불러올 수 없습니다."))
+    except:
+        return redirect(url_for("blogg", msg="해당 블로그를 불러올 수 없습니다."))
+
+
 # 블로그 추가 저장
 
 @app.route('/blogg')
@@ -165,9 +181,9 @@ def blogg():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        user_info = db.user.find_one({'id': payload['id']})  # 토큰을 통해 유저 정보 확인
-        blog_info = list(db.blog.find())
-        return render_template('index1.html')
+        user_info = db.users.find_one({'id': payload['id']})  # 토큰을 통해 유저 정보 확인
+        blog_info = list(db.blogs.find())
+        return render_template('index1.html' , blog = blog_info[1])
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
@@ -229,8 +245,7 @@ def save_blogg():
 @app.route('/delBlog', methods=['POST'])
 def del_blog():
     id_receive = request.form['id_give'] # 해당 블로그 '_id' 값
-    print(id_receive)
-    db.blog.delete_one({'_id': ObjectId(id_receive)}) # 블로그 db에서 삭제
+    db.blogs.delete_one({'_id': ObjectId(id_receive)}) # 블로그 db에서 삭제
 
     return jsonify({'msg' : '삭제되었습니다!'})
 

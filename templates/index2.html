@@ -52,6 +52,20 @@
             }
         });
     }
+
+    function del_comment(a) {
+        const listNum = a; // 댓글 번호
+        const id = '6279f4887fb619a25b54f923' // 블로그 id값
+        $.ajax({
+            type: "POST",
+            url: "/delcomment",
+            data: {listNum_give: listNum, '_id_give': id},
+            success: function (response) {  //{'msg' : '삭제되었습니다!'}
+                alert(response['msg'])
+                window.location.reload();
+            }
+        });
+    }
 </script>
 <body>
 <div id="content">
@@ -62,7 +76,7 @@
         <p>댓글 ~~~~~~~~~</p>
         <div>
 
-            <button>x</button>
+            <button onclick="del_comment(1)">x</button>
             <button>수정</button>
         </div>
     </div>
