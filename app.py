@@ -164,13 +164,16 @@ def save_blog():
 ##임시
 @app.route('/searchblog/<keyword>')
 def blogsearch(keyword):
+    token_receive = request.cookies.get('mytoken')
     id = keyword
     try:
         a = bool(db.blogs.find_one({'_id': ObjectId(id)}))
         if a:
+            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+            user_info = db.users.find_one({'username': payload['id']})  # 토큰을 통해 유저 정보 확인
             blog_list = db.blogs.find_one({'_id': ObjectId(id)})
             comment_list = blog_list['comments']
-            return render_template('detail_blog.html', blog=blog_list, comments=comment_list)
+            return render_template('detail_blog.html', blog=blog_list, comments=comment_list, id=user_info['username'])
         else:
             return redirect(url_for("main", msg="해당 블로그를 불러올 수 없습니다."))
     except:

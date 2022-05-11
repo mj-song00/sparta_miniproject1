@@ -101,3 +101,17 @@
     border-left: 1px solid #807a7a;
     width: 500px;
 }
+.save_comment{
+    border: 1px solid #000;
+    margin-top: 10px;
+    display: flex;
+    text-align: center;
+    align-items: center;
+}
+.save_comment > p {
+    margin: 10px;
+}
+.save_comment input[type='text']{
+    width: 600px;
+    margin: 0 auto;
+}

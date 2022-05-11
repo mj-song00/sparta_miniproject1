@@ -14,11 +14,45 @@
     <title> 스킬 아카이브 </title>
     <link rel="stylesheet" href="../static/detailBlog.css">
 </head>
+<script>
+    function save_comment(a) {
+        const comment = $('#save_comment').val(); //댓글 내용
+        const today = new Date().toISOString(); // 댓글 작성 날짜
+        const id = a; // 블로그 id값
+        $.ajax({
+            type: "POST",
+            url: "/savecomment",
+            data: {comment_give: comment, date_give: today, id_give: id},
+            success: function (response) { // {'msg': '댓글 달기 성공 !!'}
+                alert(response['msg'])
+                window.location.reload();
+            }
+        });
+    }
+     function del_comment(a) {
+        const listNum = a; // 댓글 번호
+        const id = '627b3514d9d6b89c83068ac5' // 블로그 id값
+        $.ajax({
+            type: "POST",
+            url: "/delcomment",
+            data: {listNum_give: listNum, '_id_give': id},
+            success: function (response) {  //{'msg' : '삭제되었습니다!'}
+                alert(response['msg'])
+                window.location.reload();
+            }
+        });
+    }
+    function logout() {
+            $.removeCookie('mytoken');
+            alert('로그아웃!')
+            window.location.href = '/login'
+        }
+</script>
 <body>
 <div class="mytitle">
     <h1>스킬 아카이브</h1>
     <div class="info_box">
-        <p>안녕하세요 000님 </p>
+        <p>안녕하세요 {{ id }}님 </p>
         <button type="button" class="btn btn-dark" onclick="logout()">로그아웃</button>
     </div>
 </div>
@@ -40,16 +74,20 @@
     </p>
     <div class="sub_content">
         {% for comment in comments %}
-        <div class="comment_txt">
-            <div class="id_comment_box">
-                <p>ID ) {{ comment.user }} </p>
-                <p>{{ comment.comment }} </p>
+            <div class="comment_txt">
+                <div class="id_comment_box">
+                    <p>ID ) {{ comment.user }} </p>
+                    <p>{{ comment.comment }} </p>
+                </div>
+                <button onclick="del_comment({{ loop.index - 1 }})">X</button>
             </div>
-            <button onclick="abc({{ loop.index - 1 }})">X</button>
-        </div>
         {% endfor %}
     </div>
-
+    <div class="save_comment">
+        <p>{{ id }}님</p>
+        <input id="save_comment" type="text">
+        <button onclick="save_comment('{{ blog._id }}')">작성</button>
+    </div>
 
 </div>
 </body>
