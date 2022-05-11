@@ -38,20 +38,7 @@
 
 </style>
 <script>
-    function save_comment(a) {
-        const comment = $('#comment').val(); //댓글 내용
-        const today = new Date().toISOString(); // 댓글 작성 날짜
-        const id = a; // 블로그 id값
-        $.ajax({
-            type: "POST",
-            url: "/savecomment",
-            data: {comment_give: comment, date_give: today, id_give: id},
-            success: function (response) { // {'msg': '댓글 달기 성공 !!'}
-                alert(response['msg'])
-                window.location.reload();
-            }
-        });
-    }
+
 
     function del_comment(a) {
         const listNum = a; // 댓글 번호

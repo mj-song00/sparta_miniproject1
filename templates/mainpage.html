@@ -15,12 +15,35 @@
     <link rel="stylesheet" href="../static/main.css">
 </head>
 <script>
-        console.log('{{ ab }}')
     function logout() {
-            $.removeCookie('mytoken');
-            alert('로그아웃!')
-            window.location.href = '/login'
-        }
+        $.removeCookie('mytoken');
+        alert('로그아웃!')
+        window.location.href = '/login'
+    }
+
+    function save_blog() {
+        const url = $('#blog_url').val(); //블로그 url
+        const summary = $('#blog_summary').val(); // 블로그 요약내용
+        const text = $("#blog_text").val()
+        const today = new Date().toISOString();  // 작성 날짜
+        $.ajax({
+            type: "POST",
+            url: "/blogg/saveBlog",
+            data: {url_give: url, summary_give: summary, date_give: today, text_give:text},
+            success: function (response) { //{'msg': '저장 완료 !!'}
+                alert(response['msg'])
+                window.location.reload()
+            }
+        });
+    }
+    function open_save(){
+        $("#blog_post").show()
+        $("#all_box").hide()
+    }
+    function close_save(){
+        $("#all_box").show()
+        $("#blog_post").hide()
+    }
 </script>
 <body>
 <div class="mytitle">
@@ -29,16 +52,16 @@
         <p>안녕하세요 000님 </p>
         <button type="button" class="btn btn-dark" onclick="logout()">로그아웃</button>
     </div>
-    <button class="btn btn-dark btn_1">블로그 추가하기</button>
+    <button class="btn btn-dark btn_1" onclick="open_save()">블로그 추가하기</button>
 </div>
-<div class="all_box">
+<div id="all_box" class="all_box">
     <div class="content_box">
-        <a href="/searchblog/627b3514d9d6b89c83068ac5">
+        <a href="/searchblog/627bcc5a26e5a6560dce7010">
             <div class="image_box">
             </div>
         </a>
         <div class="text_box">
-            <a href="/searchblog/627b3514d9d6b89c83068ac5"><p>여기서부터 아무말이나 작성된 부분이 요약입니다.</p></a>
+            <a href="/searchblog/627bcc5a26e5a6560dce7010"><p>여기서부터 아무말이나 작성된 부분이 요약입니다.</p></a>
             <div class="blog_comment">
                 <span>작성자 ) ID들어가기</span>
                 <span>댓글 ) 20개</span>
@@ -49,6 +72,24 @@
         <!-- 조건문을 사용해서 사용자가 맞을 경우만 표시 -->
         <button class="btn_3">수정</button>
         <button class="btn_3">삭제</button>
+    </div>
+</div>
+<div class="mypost" id="blog_post" style="display: none">
+    <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="blog_url" placeholder="블로그 URL">
+    </div>
+    <br>
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" id="blog_summary" placeholder="블로그 요약">
+
+    </div>
+    <div class="form-floating">
+        <textarea class="form-control" placeholder="간략한 내용" id="blog_text"
+                  style="height: 100px"></textarea>
+    </div>
+    <div class="mybtns">
+        <button onclick="save_blog()" type="button" class="btn btn-dark">추가하기</button>
+        <button type="button" class="btn btn-outline-dark" onclick="close_save()">닫기</button>
     </div>
 </div>
 </body>

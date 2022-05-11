@@ -229,6 +229,7 @@ def save_blogg():
         user_id = user_info['username'] # 유저 id
         date_receive = request.form['date_give']
         url_receive = request.form['url_give']
+        text_receive = request.form['text_give']
         summary_receive = request.form['summary_give'] # ajax로 받은 데이터, 블로그 url, 요약, 추가 날짜
         like_receive = [] # 좋아요 추가 할 빈 리스트
         comment_receive = [] # 댓글 추가 할 빈 리스트
@@ -237,6 +238,7 @@ def save_blogg():
             'username': user_id,
             'url': url_receive,
             'summary': summary_receive,
+            'text': text_receive,
             'likes': like_receive,
             'comments': comment_receive
         }
