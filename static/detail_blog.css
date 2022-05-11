@@ -1,0 +1,51 @@
+.input-group-text{
+    min-width: 120px;
+}
+
+#group {
+    margin: 0 auto;
+    max-width: 600px;
+}
+#contain{
+    border: 1px solid #000;
+    margin: 0 auto;
+    width: 800px;
+    padding: 50px;
+    border-radius: 20px;
+    box-shadow: 5px 5px 5px 5px gray;
+}
+
+#button_group{
+    display: flex;
+    justify-content: center;
+}
+.btn{
+    border: 1px solid #000;
+    border-radius: 5px;
+    margin: 10px;
+    font-weight: 600;
+}
+.btn:first-child{
+    background-color: rgba(180, 235, 236, 0.87);
+}
+/*asdasdasd*/
+/*asdasdasd*/
+/*asdasdasd*/
+/*asdasdasd*/
+/*asdasdasd*/
+/*asdasdasd*/
+/*asdasdasd*/
+/*asdasdasd*/
+
+
+p ,h1 ,h2, h3, h4, span{
+    border: 1px solid #000;
+}
+
+input{
+    border: 5px solid #000;
+    color: black;
+}
+input::placeholder{
+    color: #000;
+}

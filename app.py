@@ -9,6 +9,8 @@ SECRET_KEY = 'HANGHAE'
 
 import jwt
 from bs4 import BeautifulSoup
+import requests
+
 
 
 
