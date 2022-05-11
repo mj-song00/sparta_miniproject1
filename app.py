@@ -12,8 +12,9 @@ from bson.objectid import ObjectId
 
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
-
-client = MongoClient('mongodb+srv://test:sparta@Cluster0.faljs.mongodb.net/Cluster0?retryWrites=true&w=majority')
+# 아래 URL을 본인의 몽고DBURL로 변경후 test 해주세요
+mongodburl = 'mongodb+srv://test:sparta@Cluster0.faljs.mongodb.net/Cluster0?retryWrites=true&w=majority'
+client = MongoClient(mongodburl)
 db = client.dbsparta_plus_miniproject_real
 
 SECRET_KEY = 'HANGHAE'
