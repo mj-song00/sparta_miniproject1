@@ -4,6 +4,7 @@ app = Flask(__name__)
 from pymongo import MongoClient
 import jwt
 from bs4 import BeautifulSoup
+import requests
 import datetime
 import hashlib
 from datetime import datetime, timedelta
@@ -219,31 +220,45 @@ def blogg_comment():
 @app.route('/blogg/saveBlog', methods=['POST'])
 def save_blogg():
     token_receive = request.cookies.get('mytoken') #토큰 받기
-    print(token_receive)
 
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        print(payload)
         user_info = db.users.find_one({'username': payload['id']}) # 토큰을 통해 유저 정보 확인
-        print(user_info)
         user_id = user_info['username'] # 유저 id
         date_receive = request.form['date_give']
         url_receive = request.form['url_give']
         text_receive = request.form['text_give']
         summary_receive = request.form['summary_give'] # ajax로 받은 데이터, 블로그 url, 요약, 추가 날짜
-        like_receive = [] # 좋아요 추가 할 빈 리스트
         comment_receive = [] # 댓글 추가 할 빈 리스트
-        doc = {
-            'date': date_receive,
-            'username': user_id,
-            'url': url_receive,
-            'summary': summary_receive,
-            'text': text_receive,
-            'likes': like_receive,
-            'comments': comment_receive
-        }
-        db.blogs.insert_one(doc)
-        return jsonify({'msg': '저장 완료 !!'})
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'}
+        data = requests.get(url_receive, headers=headers)
+
+        soup = BeautifulSoup(data.text, 'html.parser')
+        try:
+            img = (soup.select_one('meta[property= "og:image"]')['content'])
+            doc = {
+                'date': date_receive,
+                'img': img,
+                'username': user_id,
+                'url': url_receive,
+                'summary': summary_receive,
+                'text': text_receive,
+                'comments': comment_receive
+            }
+            db.blogs.insert_one(doc)
+            return jsonify({'msg': '저장 완료 !!'})
+        except:
+            doc = {
+                'date': date_receive,
+                'img': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png',
+                'username': user_id,
+                'url': url_receive,
+                'summary': summary_receive,
+                'text': text_receive,
+                'comments': comment_receive
+            }
+            db.blogs.insert_one(doc)
+            return jsonify({'msg': '저장 완료 !!'})
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
@@ -268,6 +283,7 @@ def save_comment():
         id_receive = request.form['id_give']  # 댓글 달 블로그 '_id'
         date_receive = request.form['date_give'] # 작성 날짜
         comment_receive = request.form['comment_give'] # 작성 글
+        #
         docs = {
             'user': user_id,
             'date': date_receive,
