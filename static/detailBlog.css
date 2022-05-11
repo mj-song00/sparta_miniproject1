@@ -28,7 +28,7 @@
 
 .mytitle {
     width: 100%;
-    height: 250px;
+    height: 200px;
 
     background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../static/banner.jpg');
     background-position: center;
@@ -46,29 +46,6 @@
     color: black;
 }
 
-.all_box {
-    border: 1px solid #000;
-    max-width: 1200px;
-    margin: 0 auto;
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 50px;
-}
-
-.content_box {
-    display: flex;
-    width: 1200px;
-}
-
-.image_box {
-    height: 100px;
-    width: 100px;
-    margin-right: 20px;
-    background: url("https://i.pinimg.com/originals/d9/82/f4/d982f4ec7d06f6910539472634e1f9b1.png") no-repeat;
-    background-size: cover;
-}
-
 .info_box {
     display: flex;
     align-items: center;
@@ -77,30 +54,50 @@
 .info_box p, button {
     margin: 10px 20px 10px;
 }
-
-.mytitle .btn_1 {
-    background-color: #ccc;
-    width: 200px;
-    padding: 10px;
+#all_content{
+    margin: 20px auto;
+    width: 1000px;
+    padding: 0 100px;
+}
+.main_content{
+    margin: 20px auto;
+    width: 800px;
+    padding: 50px;
+    border-radius: 20px;
+    box-shadow: 5px 5px 5px 5px gray;
 }
 
-.text_box {
-    width: 600px;
+.head_txt{
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+.main_content > a{
+    float: right;
 }
 
-.button_box {
+.comment{
+    font-weight: bolder;
+    color: #807a7a;
+}
+.sub_content{
+    border: 1px solid #000;
+}
+.id_comment_box{
+    display: flex;
+    align-items: center;
+}
+.comment_txt{
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
-
-.btn_3 {
-    width: 50px;
-    margin: 15px;
-    background-color: white;
-    height: 40px;
+.id_comment_box p {
+    margin: 0;
+    margin-right: 10px;
+    padding-left: 10px;
 }
-
-.blog_comment {
-    display: flex;
-    justify-content: space-around;
+.id_comment_box p:last-child{
+    border-left: 1px solid #807a7a;
+    width: 500px;
 }

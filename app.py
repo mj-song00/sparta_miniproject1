@@ -13,7 +13,7 @@ from bson.objectid import ObjectId
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 # 아래 URL을 본인의 몽고DBURL로 변경후 test 해주세요
-mongodburl = 'mongodb+srv://test:sparta@Cluster0.faljs.mongodb.net/Cluster0?retryWrites=true&w=majority'
+mongodburl = 'mongodb+srv://test:sparta@Cluster0.faljs.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 client = MongoClient(mongodburl)
 db = client.dbsparta_plus_miniproject_real
 
@@ -25,7 +25,7 @@ def main():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        return render_template('main.html')
+        return render_template('mainpage.html')
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
@@ -164,13 +164,15 @@ def save_blog():
 ##임시
 @app.route('/searchblog/<keyword>')
 def blogsearch(keyword):
-    msg = keyword
+    id = keyword
     try:
-        a = bool(db.blogs.find_one({'_id': ObjectId(msg)}))
+        a = bool(db.blogs.find_one({'_id': ObjectId(id)}))
         if a:
-            return render_template('exa.html', msg=msg)
+            blog_list = db.blogs.find_one({'_id': ObjectId(id)})
+            comment_list = blog_list['comments']
+            return render_template('detail_blog.html', blog=blog_list, comments=comment_list)
         else:
-            return redirect(url_for("blogg", msg="해당 블로그를 불러올 수 없습니다."))
+            return redirect(url_for("main", msg="해당 블로그를 불러올 수 없습니다."))
     except:
         return redirect(url_for("blogg", msg="해당 블로그를 불러올 수 없습니다."))
 
@@ -280,10 +282,10 @@ def save_comment():
 def del_comment():
     listNum_receive = request.form['listNum_give']  # 댓글 리스트 번호
     id_receive = request.form['_id_give']  # 해당 블로그 '_id'
-    blog_info = db.blog.find_one({"_id": ObjectId(id_receive)})
-    comment_list = blog_info['comment'] #  블로그 찾고 해당 comment 리스트 가져오기
+    blog_info = db.blogs.find_one({"_id": ObjectId(id_receive)})
+    comment_list = blog_info['comments'] #  블로그 찾고 해당 comment 리스트 가져오기
     comment_list.remove(comment_list[int(listNum_receive)])
-    db.blog.update_one({'_id': ObjectId(id_receive)}, {'$set': {'comment': comment_list}})  # 댓글 삭제 및 변경된 값 수정
+    db.blogs.update_one({'_id': ObjectId(id_receive)}, {'$set': {'comments': comment_list}})  # 댓글 삭제 및 변경된 값 수정
 
     return jsonify({'msg' : '삭제되었습니다!'})
 if __name__ == '__main__':

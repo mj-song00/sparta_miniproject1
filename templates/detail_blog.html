@@ -1,66 +1,56 @@
-<!doctype html>
-<html lang="ko">
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-            crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
-    <title>블로그 추가</title>
-    <link rel="stylesheet" href="../static/detail_blog.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!--JQUREY 임포트 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
+    <title> 스킬 아카이브 </title>
+    <link rel="stylesheet" href="../static/detailBlog.css">
 </head>
 <body>
-<div id="contain">
-    <div id="group">
-        <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon3">블로그 주소</span>
-            <input type="text" class="form-control" id="basic_url" aria-describedby="basic-addon3">
-        </div>
-        <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon3">요약</span>
-            <input type="text" class="form-control" id="basic_summary" aria-describedby="basic-addon3">
-        </div>
-        <div id="button_group">
-            <button class="btn" onclick="save_blog()">추가</button>
-            <button class="btn" onclick="del_blog('{{ aa[1]._id }}')">{{ aa[1]._id }}xxx</button>
-            <button class="btn" onclick="del_blog('{{ aa[1]._id }}')">삭제</button>
-        </div>
-        <span class="input-group-text" id="basic-addon3">요약</span>
-        <input type="text" class="form-control" id="comment1" aria-describedby="basic-addon3">
-        <button class="btn" onclick="save_comment('{{ aa[1]._id }}')">저장</button>
-        <button class="btn" onclick="chg_comment('{{ aa[1]._id }}')">수정</button>
-        {% for bb in aa %}
-            {% set a = bb._id %}
-            {% set b = bb.username %}
-            {% set c = bb.url %}
-            {% set d = bb.summary %}
-            <h1 style="color: #000">id --- {{ a }}</h1>
-            <h2 style="color: red">user --- {{ b }}</h2>
-            <h3 style="color: blue">url --- {{ c }}</h3>
-            <h4 style="color: brown">summary --- {{ d }}</h4>
-        {% endfor %}
-        <br>
-        <br>
-        <br>
-        <p>asdasd</p>
-     <br>
-        <br>
-        <br>
-        {% for comment in nickname %}
-            <p>{{ loop.index - 1 }}</p>
-            <p>작성자 : {{ comment.user }} 내용 : {{ comment.comment }} 날짜 : {{ comment.date }}</p>
-            <button class="btn" onclick="del_comment({{ loop.index - 1 }})">{{ loop.index - 1 }}</button>
-        {% endfor %}
-        <label for="">asdsaasdasdasd</label>
-        <input style="color: #000" placeholder="asdas" readonly>
+<div class="mytitle">
+    <h1>스킬 아카이브</h1>
+    <div class="info_box">
+        <p>안녕하세요 000님 </p>
+        <button type="button" class="btn btn-dark" onclick="logout()">로그아웃</button>
     </div>
 </div>
-<script src="../static/detail_blog.js"></script>
+
+<div id="all_content">
+    <div class="main_content">
+        <div class="head_txt">
+            <h1>{{ blog.summary }}</h1>
+        </div>
+        <div>
+            <p>요약으로만 작성하기는 너무 적을 것 같아서 text도 하나 작성하려고하는데 어
+                떠시나요? 정답을 알려주시면 감사하겠습니다 !! 물론 간단한 보조 설명 텍스트 정도 ....</p>
+        </div>
+        <a href="{{ blog.url }}">블로그 바로가기</a>
+    </div>
+    <br>
+    <p class="comment">
+        댓글 <span>) 20</span>
+    </p>
+    <div class="sub_content">
+        {% for comment in comments %}
+        <div class="comment_txt">
+            <div class="id_comment_box">
+                <p>ID ) {{ comment.user }} </p>
+                <p>{{ comment.comment }} </p>
+            </div>
+            <button onclick="abc({{ loop.index - 1 }})">X</button>
+        </div>
+        {% endfor %}
+    </div>
+
+
+</div>
 </body>
 </html>
