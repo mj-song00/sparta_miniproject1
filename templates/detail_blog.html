@@ -71,6 +71,7 @@
         $("#modal-edit").addClass("is-active")
         let num = $(`#${com_num}`).text()
         $("#textarea-post").val(num)
+        $("#chg_btn").attr('onclick',`edit_comment(${com_num})`)
     }
 
 </script>
@@ -89,14 +90,13 @@
             <h1>{{ blog.summary }}</h1>
         </div>
         <div>
-            <p>요약으로만 작성하기는 너무 적을 것 같아서 text도 하나 작성하려고하는데 어
-                떠시나요? 정답을 알려주시면 감사하겠습니다 !! 물론 간단한 보조 설명 텍스트 정도 ....</p>
+            <p>{{ blog.text }}</p>
         </div>
         <a href="{{ blog.url }}">블로그 바로가기</a>
     </div>
     <br>
     <p class="comment">
-        댓글 <span>) 20</span>
+        댓글 <span>) {{ comment_count }}</span>
     </p>
     <div class="sub_content">
         {% for comment in comments %}
@@ -104,14 +104,14 @@
                 <div class="comment_txt">
                     <div class="id_comment_box">
                         <p>ID ) {{ comment.user }} </p>
-                        <p id="{{ loop.index - 1 }}">{{ comment.comment }} </p>
+                        <p id="{{ loop.index0 }}">{{ comment.comment }} </p>
                     </div>
                     <button type="button" class="btn btn-outline-secondary btn-sm" id="edit_button"
-                            onclick='modal({{ loop.index - 1 }})'>수정
+                            onclick='modal({{ loop.index0 }})'>수정
 
                     </button>
                     <button type="button" class="btn btn-outline-danger btn-sm"
-                            onclick="del_comment({{ loop.index - 1 }})">삭제
+                            onclick="del_comment({{ loop.index0}})">삭제
                     </button>
                 </div>
             {% else %}
@@ -124,8 +124,6 @@
             {% endif %}
         {% endfor %}
     </div>
-
-    {% for comment in comments %}
         <div class="modal" id="modal-edit">
             <div class="modal-background" onclick='$("#modal-edit").removeClass("is-active")'></div>
             <div class="modal-content">
@@ -142,7 +140,7 @@
                                 </div>
                                 <div class="level-right">
                                     <div class="level-item">
-                                        <a class="button is-sparta" onclick="edit_comment(2)">수정</a>
+                                        <a id="chg_btn" class="button is-sparta">수정</a>
                                     </div>
                                     <div class="level-item">
                                         <a class="button is-sparta is-outlined"
@@ -157,7 +155,6 @@
             <button class="modal-close is-large" aria-label="close"
                     onclick='$("#modal-edit").removeClass("is-active")'></button>
         </div>
-    {% endfor %}
 
     <div class="save_comment">
         <p>{{ id }}님</p>

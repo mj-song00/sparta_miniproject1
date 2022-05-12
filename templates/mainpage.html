@@ -7,6 +7,8 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+
     <!--JQUREY 임포트 -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
@@ -21,6 +23,19 @@
         window.location.href = '/login'
     }
 
+    function del_blog(a) {
+        const id = a;
+        $.ajax({
+            type: "POST",
+            url: "/delBlog",
+            data: {id_give: id},
+            success: function (response) {
+                alert(response['msg'])
+                window.location.reload();
+            }
+        });
+    }
+
     function save_blog() {
         const url = $('#blog_url').val(); //블로그 url
         const summary = $('#blog_summary').val(); // 블로그 요약내용
@@ -29,55 +44,98 @@
         $.ajax({
             type: "POST",
             url: "/blogg/saveBlog",
-            data: {url_give: url, summary_give: summary, date_give: today, text_give:text},
+            data: {url_give: url, summary_give: summary, date_give: today, text_give: text},
             success: function (response) { //{'msg': '저장 완료 !!'}
                 alert(response['msg'])
                 window.location.reload()
             }
         });
     }
-    function open_save(){
+
+    function open_save() {
         $("#blog_post").show()
         $("#all_box").hide()
     }
-    function close_save(){
+
+    function close_save() {
         $("#all_box").show()
         $("#blog_post").hide()
+    }
+
+    function modal(com_num) {
+        $("#modal-edit").addClass("is-active");
+        {#let num = $(`#${com_num}`).text()#}
+        {#$("#textarea-post").val(num)#}
+        $("#chg_btn").attr('onclick',`edit_blog('${com_num}')`)
+    }
+    function edit_blog(id){
+        let text = $("#textarea-post").val()
+        console.log(id)
+        console.log(text)
+        $.ajax({
+            type: "POST",
+            url: "/edit_blog",
+            data: {id_give: id, text_give: text},
+            success: function (response) { //{'msg': '수정 완료 !!'}
+                alert(response['msg'])
+                window.location.reload()
+            }
+        });
     }
 </script>
 <body>
 <div class="mytitle">
     <h1>스킬 아카이브</h1>
     <div class="info_box">
-        <p>안녕하세요 {{ username }}님 </p>
+        <p>안녕하세요 {{ id }}님 </p>
         <button type="button" class="btn btn-dark" onclick="logout()">로그아웃</button>
     </div>
     <button class="btn btn-dark btn_1" onclick="open_save()">블로그 추가하기</button>
 </div>
 
 <div id="all_box">
-{% for list in blogs %}
-<div  class="all_box">
-    <div class="content_box">
-        <a href="{{list.img}}">
-            <div class="image_box" style ="background-image:url({{list.img}})" >
+    {% for blog in blog_infos %}
+        {% if id == blog.username %}
+            <div class="all_box">
+                <div class="content_box">
+                    <a href="/searchblog/{{ blog._id }}">
+                        <div class="image_box" style="background-image: url({{ blog.img }})">
+                        </div>
+                    </a>
+                    <div class="text_box">
+                        <a href="/searchblog/{{ blog._id }}" taget="_blank"><p>{{ blog.summary }}</p></a>
+                        <div class="blog_comment">
+                            <span>{{ blog.username }}</span>
+                            <span>댓글 {{ count_list[loop.index0] }}개</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="button_box">
+                    <!-- 조건문을 사용해서 사용자가 맞을 경우만 표시 -->
+                    <button class="btn_3" onclick="modal('{{ blog._id }}')">수정</button>
+                    <button class="btn_3" onclick="del_blog('{{ blog._id }}')">삭제</button>
+                </div>
             </div>
-        </a>
-        <div class="text_box">
-            <a href="/detail_blog?={username[i]['_id']}" taget="_blank"><p>{{list.text}}</p></a>
-            <div class="blog_comment">
-                <span>{{list.username}}</span>
-                <span>댓글 {{list.comment}}개</span>
+        {% else %}
+            <div class="all_box">
+                <div class="content_box">
+                    <a href="/searchblog/{{ blog._id }}">
+                        <div class="image_box" style="background-image: url({{ blog.img }})">
+                        </div>
+                    </a>
+                    <div class="text_box">
+                        <a href="/searchblog/{{ blog._id }}" taget="_blank"><p>{{ blog.summary }}</p></a>
+                        <div class="blog_comment">
+                            <span>{{ blog.username }}</span>
+                            <span>댓글 {{ count_list[loop.index0] }}개</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="button_box">
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="button_box">
-        <!-- 조건문을 사용해서 사용자가 맞을 경우만 표시 -->
-        <button class="btn_3">수정</button>
-        <button class="btn_3">삭제</button>
-    </div>
-</div>
-{% endfor%}
+        {% endif %}
+    {% endfor %}
 </div>
 
 <div class="mypost" id="blog_post" style="display: none">
@@ -97,6 +155,38 @@
         <button onclick="save_blog()" type="button" class="btn btn-dark">추가하기</button>
         <button type="button" class="btn btn-outline-dark" onclick="close_save()">닫기</button>
     </div>
+</div>
+
+<div class="modal" id="modal-edit">
+    <div class="modal-background" onclick='$("#modal-edit").removeClass("is-active")'></div>
+    <div class="modal-content">
+        <div class="box">
+            <article class="media">
+                <div class="media-content">
+                    <div class="field">
+                        <p class="control">
+                            <textarea id="textarea-post" class="textarea"></textarea>
+                        </p>
+                    </div>
+                    <nav class="level is-mobile">
+                        <div class="level-left">
+                        </div>
+                        <div class="level-right">
+                            <div class="level-item">
+                                <a id="chg_btn" class="button is-sparta">수정</a>
+                            </div>
+                            <div class="level-item">
+                                <a class="button is-sparta is-outlined"
+                                   onclick='$("#modal-edit").removeClass("is-active")'>취소</a>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </article>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#modal-edit").removeClass("is-active")'></button>
 </div>
 </body>
 </html>
