@@ -61,14 +61,6 @@
     width: 1200px;
 }
 
-.image_box {
-    height: 100px;
-    width: 100px;
-    margin-right: 20px;
-    background: url("https://i.pinimg.com/originals/d9/82/f4/d982f4ec7d06f6910539472634e1f9b1.png") no-repeat;
-    background-size: cover;
-}
-
 .info_box {
     display: flex;
     align-items: center;
@@ -103,4 +95,11 @@
 .blog_comment {
     display: flex;
     justify-content: space-around;
+}
+.image_box  {
+    width: 100px;
+    height: 100px;
+    border: 1px solid #000;
+    background-size: cover;
+    background-repeat: no-repeat;
 }

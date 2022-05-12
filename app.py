@@ -26,10 +26,19 @@ def main():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        print(payload)
-        all_blogs = list(db.blogs.find({'username': payload['id']}))
-        print(all_blogs)
-        return render_template('mainpage.html', blogs=all_blogs)
+        user_info = db.users.find_one({'username': payload['id']})
+        blog_infos = list(db.blogs.find())
+        count_list = []
+        for blog_info in blog_infos:
+            comment_list = blog_info['comments']
+            count_list.append(len(comment_list))
+        return render_template('mainpage.html', id=user_info['username'], count_list=count_list, blog_infos=blog_infos)
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+
+
 @app.route('/login')
 def login():
     msg = request.args.get("msg")
