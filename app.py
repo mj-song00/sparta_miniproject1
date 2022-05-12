@@ -26,7 +26,13 @@ def main():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        return render_template('mainpage.html')
+        user_info = db.users.find_one({'username': payload['id']})
+        blog_infos = list(db.blogs.find())
+        count_list = []
+        for blog_info in blog_infos :
+            comment_list = blog_info['comments']
+            count_list.append(len(comment_list))
+        return render_template('mainpage.html', id=user_info['username'], count_list=count_list, blog_infos=blog_infos)
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
@@ -83,85 +89,6 @@ def check_dup():
     exists = bool(db.users.find_one({"username": username_receive}))
     return jsonify({'result': 'success', 'exists': exists})
 
-# 블로그 저장
-@app.route('/blog/saveBlog', methods=['POST'])
-def save_blog():
-    token_receive = request.cookies.get('mytoken')
-
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithm=['HS256'])
-        user_info = db.userdb.find_one({'id': payload['id']})
-        writer_name = user_info['id']  # 토큰에서 ID 정보 가져오기
-
-        url_receive = request.form['url_give']
-        desc_receive = request.form['desc_give']
-
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'}
-        data = requests.get(url_receive, headers=headers)
-
-        soup = BeautifulSoup(data.text, 'html.parser')
-
-        og_image = soup.select_one('meta[property="og:image"]')
-        og_title = soup.select_one('meta[property="og:title"]')
-
-        image = og_image['content']
-        title = og_title['content']
-
-        doc = {
-            'blog_desc': desc_receive,
-            'url': url_receive,
-            'image': image,
-            'title': title,
-        }
-
-        client.blogs.bloglist.insert_one(doc)
-        return jsonify({'msg': '저장 완료 !!'})
-
-    except jwt.ExpiredSignatureError:
-        return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
-
-    except jwt.exceptions.DecodeError:
-        return redirect(url_for("login", msg="로그인 정보가 올바르지 않습니다."))
-
-
-# # 저장된 블로그 불러오기
-# @app.route('/<url>')
-# def show_clicked_post(url):
-#     token_receive = request.cookies.get('mytoken')
-#     print(token_receive)
-#
-#     try:
-#         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-#         user_info = db.userdb.find_one({'id': payload['id']})
-#         user_id = user_info['id']
-#
-#         data = db.bloglist.find_one({'id': id, })
-#         user_id = data['user_id']
-#         url = data['url']
-#         blog_desc = data['blog_desc']
-#         image = data['image']
-#         title = data['title']
-#
-#         return render_template("main.html",
-#                                user_id=user_id,
-#                                url=url,
-#                                blog_desc=blog_desc,
-#                                image=image,
-#                                title=title)
-#
-#     except jwt.ExpiredSignatureError:
-#         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
-#
-#     except jwt.exceptions.DecodeError:
-#         return redirect(url_for("login", msg="로그인 정보가 올바르지 않습니다."))
-#
-#     # bloglist = list(client.blogs.bloglist.find({},{'_id':False}))
-#
-#     # return jsonify({'blogs':bloglist})
-
-
-
 ##임시
 @app.route('/searchblog/<keyword>')
 def blogsearch(keyword):
@@ -174,7 +101,8 @@ def blogsearch(keyword):
             user_info = db.users.find_one({'username': payload['id']})  # 토큰을 통해 유저 정보 확인
             blog_list = db.blogs.find_one({'_id': ObjectId(id)})
             comment_list = blog_list['comments']
-            return render_template('detail_blog.html', blog=blog_list, comments=comment_list, id=user_info['username'])
+            comment_count = len(comment_list)
+            return render_template('detail_blog.html', blog=blog_list, comments=comment_list, id=user_info['username'], comment_count=comment_count)
         else:
             return redirect(url_for("main", msg="해당 블로그를 불러올 수 없습니다."))
     except:
