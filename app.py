@@ -65,6 +65,14 @@ def edit_comment():
 
     return jsonify({'msg': '수정완료!'})
 
+@app.route('/edit_blog', methods=['POST'])
+def edit_blog():
+    id_receive = request.form['id_give']  # 해당 블로그 '_id'
+    text_receive = request.form['text_give']
+
+    db.blogs.update_one({'_id': ObjectId(id_receive)}, {'$set': {'summary': text_receive}})
+
+    return jsonify({'msg': '수정완료!'})
 @app.route('/sign_in', methods=['POST'])
 def sign_in():
     # 로그인
