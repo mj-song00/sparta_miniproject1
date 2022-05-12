@@ -29,77 +29,57 @@
         $.ajax({
             type: "POST",
             url: "/blogg/saveBlog",
-            data: {url_give: url, summary_give: summary, date_give: today, text_give: text},
+            data: {url_give: url, summary_give: summary, date_give: today, text_give:text},
             success: function (response) { //{'msg': '저장 완료 !!'}
                 alert(response['msg'])
                 window.location.reload()
             }
         });
     }
-
-    function open_save() {
+    function open_save(){
         $("#blog_post").show()
         $("#all_box").hide()
     }
-
-    function close_save() {
+    function close_save(){
         $("#all_box").show()
         $("#blog_post").hide()
     }
-    function del_blog(a) {
-    const id = a;
-    $.ajax({
-        type: "POST",
-        url: "/delBlog",
-        data: { id_give: id},
-        success: function (response) {
-            alert(response['msg'])
-            window.location.reload();
-        }
-    });
-}
 </script>
 <body>
 <div class="mytitle">
     <h1>스킬 아카이브</h1>
     <div class="info_box">
-        <p>안녕하세요 {{ id }}님 </p>
+        <p>안녕하세요 {{ username }}님 </p>
         <button type="button" class="btn btn-dark" onclick="logout()">로그아웃</button>
     </div>
     <button class="btn btn-dark btn_1" onclick="open_save()">블로그 추가하기</button>
 </div>
+
 <div id="all_box">
-    {% for blog_info in blog_infos %}
-        <div class="all_box">
-            <div class="content_box">
-                <a href="/searchblog/{{ blog_info._id }}">
-                    <div class="image_box">
-                        <img src="{{ blog_info.img }}" alt="블로그 이미지">
-                    </div>
-                </a>
-                <div class="text_box">
-                    <a href="/searchblog/{{ blog_info._id }}"><p>{{blog_info.summary}}</p></a>
-                    <div class="blog_comment">
-                        <span>작성자 ) {{ blog_info.username}}</span>
-                        <span>댓글 ) {{ count_list[loop.index0] }}개</span>
-                    </div>
-                </div>
+{% for list in blogs %}
+<div  class="all_box">
+    <div class="content_box">
+        <a href="{{list.img}}">
+            <div class="image_box" style ="background-image:url({{list.img}})" >
             </div>
-            <div class="button_box">
-                <!-- 조건문을 사용해서 사용자가 맞을 경우만 표시 -->
-                <button class="btn_3">수정</button>
-                <button class="btn_3" onclick="del_blog('{{ blog_info._id }}')">삭제</button>
+        </a>
+        <div class="text_box">
+            <a href="/detail_blog?={username[i]['_id']}" taget="_blank"><p>{{list.text}}</p></a>
+            <div class="blog_comment">
+                <span>{{list.username}}</span>
+                <span>댓글 {{list.comment}}개</span>
             </div>
         </div>
-    {% endfor %}
     </div>
     <div class="button_box">
         <!-- 조건문을 사용해서 사용자가 맞을 경우만 표시 -->
-        <button class="like">좋아요</button>
         <button class="btn_3">수정</button>
         <button class="btn_3">삭제</button>
     </div>
 </div>
+{% endfor%}
+</div>
+
 <div class="mypost" id="blog_post" style="display: none">
     <div class="form-floating mb-3">
         <input type="text" class="form-control" id="blog_url" placeholder="블로그 URL">
