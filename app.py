@@ -35,6 +35,26 @@ def login():
     msg = request.args.get("msg")
     return render_template('login.html', msg=msg)
 
+# 댓글 수정
+@app.route('/edit_comment', methods=['POST'])
+def edit_comment():
+    listNum_receive = request.form['listNum_give']  # 댓글 리스트 번호
+    id_receive = request.form['_id_give']  # 해당 블로그 '_id'
+    blog_info = db.blogs.find_one({"_id": ObjectId(id_receive)})
+    comment_list = blog_info['comments']  # 블로그 찾고 해당 comment 리스트 가져오기
+    bf_comments = comment_list[int(listNum_receive)]
+    edit_receive = request.form['edit_comment_give']
+    print(comment_list)
+
+    bf_comments.update({'comment': edit_receive})
+
+    print(comment_list)
+
+    print(bf_comments)
+
+    db.blogs.update_one({'_id': ObjectId(id_receive)}, {'$set': {'comments': comment_list}})
+
+    return jsonify({'msg': '수정완료!'})
 
 @app.route('/sign_in', methods=['POST'])
 def sign_in():
